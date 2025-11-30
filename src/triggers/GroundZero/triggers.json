@@ -1,0 +1,41 @@
+[
+    {
+        "name": "comms",
+        "isActive": "yes",
+        "isFolder": "yes",
+        "children": [
+            {
+                "name": "Gossip Capture",
+                "isActive": "no",
+                "isFolder": "no",
+                "multiline": "no",
+                "multilineDelta": "0",
+                "matchall": "no",
+                "filter": "no",
+                "fireLength": "0",
+                "patterns": [
+                    {
+                        "pattern": "^.*$",
+                        "type": "regex"
+                    }
+                ]
+            },
+            {
+                "name": "Gossip Trigger",
+                "isActive": "yes",
+                "isFolder": "no",
+                "multiline": "no",
+                "multilineDelta": "0",
+                "matchall": "no",
+                "filter": "no",
+                "fireLength": "0",
+                "patterns": [
+                    {
+                        "pattern": "^(.+) gossips, '(.*)",
+                        "type": "regex"
+                    }
+                ]
+            }
+        ]
+    }
+]

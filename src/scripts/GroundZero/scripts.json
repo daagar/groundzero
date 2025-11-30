@@ -1,0 +1,15 @@
+[
+  {
+    "name": "msdp_mapper",
+    "eventHandlerList": [
+      "sysInstall"
+    ]
+  },
+  {
+    "name": "gossip",
+    "eventHandlerList": [
+      "sysInstall",
+      "sysLoadEvent"
+    ]
+  }
+]
