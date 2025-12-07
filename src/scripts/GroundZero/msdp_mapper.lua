@@ -106,13 +106,10 @@ local function make_room()
         setRoomEnv(info.vnum, terrain_types[info.terrain].id)
     end
     for dir, id in pairs(info.exits) do
-        echo("dir: " .. dir .. " id: " .. id .. "\n")
         -- need to see how special exits are represented to handle those properly here
         if getRoomName(id) then
-            echo("setting exit\n")
             setExit(info.vnum, id, dir)
         else
-            echo("setting stub\n")
             setExitStub(info.vnum, dir, true)
         end
     end
