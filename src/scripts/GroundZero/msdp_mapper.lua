@@ -138,15 +138,12 @@ local function handle_move()
     if not getRoomName(info.vnum) then
         make_room()
     else
-        local stubs = getExitStubs1(info.vnum)
-        if stubs then
-            for _, n in ipairs(stubs) do
-                local dir = exitmap[n]
-                local id = info.exits[dir]
-                -- need to see how special exits are represented to handle those properly here
-                if id and getRoomName(id) then
-                    setExit(info.vnum, id, dir)
-                end
+        for dir, id in pairs(info.exits) do
+            -- need to see how special exits are represented to handle those properly here
+            if getRoomName(id) then
+                setExit(info.vnum, id, dir)
+            else
+                setExitStub(info.vnum, dir, true)
             end
         end
     end
@@ -160,7 +157,6 @@ local function config()
     sendMSDP("REPORT", "AREA_NAME")
     sendMSDP("REPORT", "ROOM_EXITS")
     sendMSDP("REPORT", "TERRAIN")
-    sendMSDP("XTERM_256_COLORS", "1")
 
     -- setting terrain colors
     for k, v in pairs(terrain_types) do
@@ -195,8 +191,7 @@ function map.eventHandler(event, ...)
             vnum = tonumber(msdp.ROOM_VNUM),
             area = msdp.AREA_NAME,
             name = msdp.ROOM_NAME,
-            exits = msdp
-                .ROOM_EXITS,
+            exits = msdp.ROOM_EXITS,
             terrain = msdp.TERRAIN
         }
         map.room_info.exits = parseDirections(map.room_info.exits)
