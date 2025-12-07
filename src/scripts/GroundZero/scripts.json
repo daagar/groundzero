@@ -11,5 +11,12 @@
       "sysInstall",
       "sysLoadEvent"
     ]
+  },
+  {
+    "name": "status_bar",
+    "eventHandlerList": [
+      "sysInstall",
+      "sysConnectionEvent"
+    ]
   }
 ]

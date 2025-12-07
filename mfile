@@ -1,6 +1,6 @@
 {
-  "package": "GroundZero",
-  "version": "0.0.1",
+  "package": "groundzero",
+  "version": "0.0.2",
   "author": "edgecase",
   "title": "For Nukefire MUD",
   "outputFile": true
