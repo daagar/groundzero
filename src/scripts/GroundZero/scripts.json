@@ -2,7 +2,7 @@
   {
     "name": "msdp_mapper",
     "eventHandlerList": [
-      "sysInstall"
+      "sysProtocolEnabled"
     ]
   },
   {
@@ -15,8 +15,7 @@
   {
     "name": "status_bar",
     "eventHandlerList": [
-      "sysInstall",
-      "sysConnectionEvent"
+      "sysProtocolEnabled"
     ]
   }
 ]

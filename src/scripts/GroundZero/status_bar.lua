@@ -149,16 +149,7 @@ function StatusBar.update_all()
 end
 
 function StatusBar.eventHandler(event, ...)
-    if event == "sysConnectionEvent" or event == "sysInstall" then
-        StatusBar.create()
-        -- Request MSDP variables
-        sendMSDP("REPORT", "HEALTH")
-        sendMSDP("REPORT", "HEALTH_MAX")
-        sendMSDP("REPORT", "MANA")
-        sendMSDP("REPORT", "MANA_MAX")
-        sendMSDP("REPORT", "MOVEMENT")
-        sendMSDP("REPORT", "MOVEMENT_MAX")
-    elseif event == "msdp.HEALTH" or event == "msdp.HEALTH_MAX" then
+    if event == "msdp.HEALTH" or event == "msdp.HEALTH_MAX" then
         StatusBar.update_gauge(StatusBar.health, msdp.HEALTH, msdp.HEALTH_MAX)
     elseif event == "msdp.MANA" or event == "msdp.MANA_MAX" then
         StatusBar.update_gauge(StatusBar.mana, msdp.MANA, msdp.MANA_MAX)
@@ -167,8 +158,21 @@ function StatusBar.eventHandler(event, ...)
     end
 end
 
-registerAnonymousEventHandler("sysConnectionEvent", "StatusBar.eventHandler")
-registerAnonymousEventHandler("sysInstall", "StatusBar.eventHandler")
+function StatusBar.protocolHandler(event, protocol)
+    if protocol == "MSDP" then
+        -- Request MSDP variables
+        sendMSDP("REPORT", "HEALTH")
+        sendMSDP("REPORT", "HEALTH_MAX")
+        sendMSDP("REPORT", "MANA")
+        sendMSDP("REPORT", "MANA_MAX")
+        sendMSDP("REPORT", "MOVEMENT")
+        sendMSDP("REPORT", "MOVEMENT_MAX")
+
+        StatusBar.create()
+    end
+end
+
+registerAnonymousEventHandler("sysProtocolEnabled", "StatusBar.protocolHandler")
 registerAnonymousEventHandler("msdp.HEALTH", "StatusBar.eventHandler")
 registerAnonymousEventHandler("msdp.HEALTH_MAX", "StatusBar.eventHandler")
 registerAnonymousEventHandler("msdp.MANA", "StatusBar.eventHandler")
