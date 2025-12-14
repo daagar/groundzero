@@ -1,25 +1,20 @@
 StatusBar = StatusBar or {}
 
+-- Try to require TextGauge, assume it's available via MDK
+local TextGauge = require("MDK.textgauge")
+
 -- Configuration
 local config = {
-    height = "30px",
-    fontSize = 12,
-    font = "Bitstream Vera Sans Mono",
+    height = "100px", -- Increased height for stacked bars
+    fontSize = 14,
+    font = "Cascadia Code",
+    fillChar = ":",
+    emptyChar = "-",
+    fillColor = "#ff6600",  -- Bright Deep Orange
+    emptyColor = "#333333", -- Dark Metallic Grey
+    overflowColor = "#ffffff",
+    labelColor = "#ffffff",
 }
-
-function StatusBar.get_color(percentage)
-    if percentage >= 80 then
-        return "green"
-    elseif percentage >= 60 then
-        return "yellowgreen"
-    elseif percentage >= 40 then
-        return "yellow"
-    elseif percentage >= 20 then
-        return "orange"
-    else
-        return "red"
-    end
-end
 
 function StatusBar.create()
     -- Create the container at the bottom
@@ -27,125 +22,75 @@ function StatusBar.create()
         name = "StatusBarContainer",
         titleText = "", -- Remove title text
         x = 0,
-        y = -30,        -- Docked to bottom
+        y = -100,       -- Docked to bottom (matching height)
         width = "100%",
         height = config.height,
-        adjLabelstyle = "background-color:rgba(0,0,0,100%); border: 0px solid #333333;", -- Dark grey border
+        adjLabelstyle = "background-color:rgba(20,20,20,100%); border: 2px solid #ff6600;",
     })
 
-    -- Label Styles
-    local label_style = [[
-        background-color: rgba(0,0,0,0);
-        font-family: ']] .. config.font .. [[';
-        font-size: ]] .. config.fontSize .. [[px;
-        font-weight: bold;
-        color: white;
-        qproperty-alignment: 'AlignRight | AlignVCenter';
-    ]]
-
-    -- Health Section
-    StatusBar.lblHealth = Geyser.Label:new({
-        name = "StatusBarLblHealth",
-        x = "0%",
+    -- Create a console for the text gauges
+    StatusBar.console = Geyser.MiniConsole:new({
+        name = "StatusBarConsole",
+        x = 0,
         y = 0,
-        width = "5%",
+        width = "100%",
         height = "100%",
-    }, StatusBar.container)
-    StatusBar.lblHealth:echo("HP")
-    StatusBar.lblHealth:setStyleSheet(label_style)
-
-    StatusBar.health = Geyser.Gauge:new({
-        name = "StatusBarHealth",
-        x = "5.5%",
-        y = 0,
-        width = "27%",
-        height = "100%",
+        color = "black",
+        fontSize = config.fontSize,
+        font = config.font,
     }, StatusBar.container)
 
-    -- Mana Section
-    StatusBar.lblMana = Geyser.Label:new({
-        name = "StatusBarLblMana",
-        x = "33%",
-        y = 0,
-        width = "5%",
-        height = "100%",
-    }, StatusBar.container)
-    StatusBar.lblMana:echo("MP")
-    StatusBar.lblMana:setStyleSheet(label_style)
+    -- Define common gauge options
+    local gaugeOpts = {
+        width = 50, -- Characters wide
+        fillCharacter = config.fillChar,
+        emptyCharacter = config.emptyChar,
+        fillColor = config.fillColor,
+        emptyColor = config.emptyColor,
+        overflowColor = config.overflowColor,
+        valueColor = config.labelColor,
+        showPercent = false, -- We'll customize the format
+        showPercentSymbol = false,
+        format = "d",
+    }
 
-    StatusBar.mana = Geyser.Gauge:new({
-        name = "StatusBarMana",
-        x = "38.5%",
-        y = 0,
-        width = "27%",
-        height = "100%",
-    }, StatusBar.container)
-
-    -- Movement Section
-    StatusBar.lblMovement = Geyser.Label:new({
-        name = "StatusBarLblMovement",
-        x = "66%",
-        y = 0,
-        width = "5%",
-        height = "100%",
-    }, StatusBar.container)
-    StatusBar.lblMovement:echo("MV")
-    StatusBar.lblMovement:setStyleSheet(label_style)
-
-    StatusBar.movement = Geyser.Gauge:new({
-        name = "StatusBarMovement",
-        x = "71.5%",
-        y = 0,
-        width = "27%",
-        height = "100%",
-    }, StatusBar.container)
-
-    -- Initialize styles
-    local style = [[
-        font-family: ']] .. config.font .. [[';
-        font-weight: bold;
-        color: white;
-        text-shadow: 1px 1px 0 #000;
-        border: 1px solid #555555;
-    ]]
-
-    StatusBar.health.front:setStyleSheet(style)
-    StatusBar.mana.front:setStyleSheet(style)
-    StatusBar.movement.front:setStyleSheet(style)
+    -- Create Gauges
+    StatusBar.health = TextGauge:new(gaugeOpts)
+    StatusBar.mana = TextGauge:new(gaugeOpts)
+    StatusBar.movement = TextGauge:new(gaugeOpts)
 
     -- Set initial text
     StatusBar.update_all()
 end
 
-function StatusBar.update_gauge(gauge, current, max)
+function StatusBar.update_gauge(gauge, label, current, max)
     current = tonumber(current) or 0
     max = tonumber(max) or 1
-    if max == 0 then max = 1 end -- Prevent division by zero
+    if max == 0 then max = 1 end
 
-    local percentage = (current / max) * 100
-    local color = StatusBar.get_color(percentage)
+    -- Custom format: "Label: Current/Max [Bar]"
+    -- gauge:setValue returns the formatted string in MDK TextGauge which contains color tags
+    local bar = gauge:setValue(current, max)
 
-    gauge:setValue(current, max, string.format("%d / %d", current, max))
-    gauge.front:setStyleSheet(string.format([[
-        background-color: %s;
-        font-family: '%s';
-        font-size: %dpx;
-        font-weight: bold;
-        color: black;
-        qproperty-alignment: 'AlignHCenter | AlignVCenter';
-        border: 1px solid #555555;
-    ]], color, config.font, config.fontSize))
-
-    -- Back style usually dark
-    gauge.back:setStyleSheet([[
-        background-color: #333333;
-    ]])
+    -- We construct the string and print it to the console
+    -- We use <255,255,255> for white to be safe with decho parsing
+    local text = string.format("<180,180,180>%-4s %4d/%-4d %s", label, current, max, bar)
+    return text
 end
 
 function StatusBar.update_all()
-    StatusBar.update_gauge(StatusBar.health, msdp.HEALTH, msdp.HEALTH_MAX)
-    StatusBar.update_gauge(StatusBar.mana, msdp.MANA, msdp.MANA_MAX)
-    StatusBar.update_gauge(StatusBar.movement, msdp.MOVEMENT, msdp.MOVEMENT_MAX)
+    if not StatusBar.console then return end
+
+    StatusBar.console:clear()
+
+    local hp = StatusBar.update_gauge(StatusBar.health, "HP:", msdp.HEALTH, msdp.HEALTH_MAX)
+    local mp = StatusBar.update_gauge(StatusBar.mana, "MP:", msdp.MANA, msdp.MANA_MAX)
+    local mv = StatusBar.update_gauge(StatusBar.movement, "MV:", msdp.MOVEMENT, msdp.MOVEMENT_MAX)
+
+    -- Print nicely formatted lines using decho (for hex support)
+    StatusBar.console:decho(hp .. "\n")
+    StatusBar.console:decho(mp .. "\n")
+    StatusBar.console:decho(mv .. "\n")
 end
 
 function StatusBar.eventHandler(event, ...)
@@ -158,13 +103,9 @@ function StatusBar.eventHandler(event, ...)
         sendMSDP("REPORT", "MANA_MAX")
         sendMSDP("REPORT", "MOVEMENT")
         sendMSDP("REPORT", "MOVEMENT_MAX")
-    elseif event == "msdp.HEALTH" or event == "msdp.HEALTH_MAX" then
-        StatusBar.update_gauge(StatusBar.health, msdp.HEALTH, msdp.HEALTH_MAX)
-    elseif event == "msdp.MANA" or event == "msdp.MANA_MAX" then
-        StatusBar.update_gauge(StatusBar.mana, msdp.MANA, msdp.MANA_MAX)
-    elseif event == "msdp.MOVEMENT" or event == "msdp.MOVEMENT_MAX" then
-        StatusBar.update_gauge(StatusBar.movement, msdp.MOVEMENT, msdp.MOVEMENT_MAX)
     end
+    -- Trigger generic update for all related events for simplicity with text console redrawing
+    StatusBar.update_all()
 end
 
 registerAnonymousEventHandler("sysConnectionEvent", "StatusBar.eventHandler")
