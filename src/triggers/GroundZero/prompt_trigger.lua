@@ -38,3 +38,8 @@ end
 if StatusBar and StatusBar.update_all then
     StatusBar.update_all()
 end
+
+-- Close affects capture if active
+if GZ.affects and GZ.affects.end_capture then
+    GZ.affects.end_capture()
+end

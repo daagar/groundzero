@@ -53,5 +53,92 @@
                 "type": "regex"
             }
         ]
+    },
+    {
+        "name": "Affects Capture",
+        "isActive": "yes",
+        "isFolder": "yes",
+        "children": [
+            {
+                "name": "Affects Header",
+                "isActive": "yes",
+                "isFolder": "no",
+                "multiline": "no",
+                "multilineDelta": "0",
+                "matchall": "no",
+                "filter": "no",
+                "fireLength": "0",
+                "patterns": [
+                    {
+                        "pattern": "^Str: \\[(\\d+)\\]  Int: \\[(\\d+)\\]",
+                        "type": "regex"
+                    }
+                ]
+            },
+            {
+                "name": "Affects Line",
+                "isActive": "yes",
+                "isFolder": "no",
+                "multiline": "no",
+                "multilineDelta": "0",
+                "matchall": "no",
+                "filter": "no",
+                "fireLength": "0",
+                "patterns": [
+                    {
+                        "pattern": "^([A-Za-z ]+)\\s*:\\s*\\[(.*?)\\]\\s*$",
+                        "type": "regex"
+                    }
+                ]
+            },
+            {
+                "name": "Affects Timer",
+                "isActive": "yes",
+                "isFolder": "no",
+                "multiline": "no",
+                "multilineDelta": "0",
+                "matchall": "no",
+                "filter": "no",
+                "fireLength": "0",
+                "patterns": [
+                    {
+                        "pattern": "^TIMER:.*",
+                        "type": "regex"
+                    }
+                ]
+            },
+            {
+                "name": "Affects Spell",
+                "isActive": "yes",
+                "isFolder": "no",
+                "multiline": "no",
+                "multilineDelta": "0",
+                "matchall": "no",
+                "filter": "no",
+                "fireLength": "0",
+                "patterns": [
+                    {
+                        "pattern": "^SPL:\\s*(.*)",
+                        "type": "regex"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Bark Skin Fade",
+        "isActive": "yes",
+        "isFolder": "no",
+        "multiline": "no",
+        "multilineDelta": "0",
+        "matchall": "no",
+        "filter": "no",
+        "fireLength": "0",
+        "patterns": [
+            {
+                "pattern": "^The bark-like texture surrounding you fades away as you cease concentration\\.$",
+                "type": "regex"
+            }
+        ]
     }
 ]

@@ -14,5 +14,9 @@
   {
     "name": "status_bar",
     "eventHandlerList": []
+  },
+  {
+    "name": "affects_window",
+    "eventHandlerList": []
   }
 ]
