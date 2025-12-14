@@ -37,5 +37,21 @@
                 ]
             }
         ]
+    },
+    {
+        "name": "Prompt Trigger",
+        "isActive": "yes",
+        "isFolder": "no",
+        "multiline": "no",
+        "multilineDelta": "0",
+        "matchall": "no",
+        "filter": "no",
+        "fireLength": "0",
+        "patterns": [
+            {
+                "pattern": "^< \\d+H \\d+M \\d+V( AFK)?(?: (.*?) \\[(\\d+)%\\])? \\[Lvl (\\d+), EXP to next: (\\d+)\\](?: M\\[(\\d+)\\])? >",
+                "type": "regex"
+            }
+        ]
     }
 ]

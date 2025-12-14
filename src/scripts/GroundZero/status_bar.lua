@@ -78,14 +78,50 @@ function StatusBar.update_gauge(gauge, label, current, max)
     return text
 end
 
+function StatusBar.get_extra_info(line_index)
+    if not GZ then return "" end
+
+    local extras = ""
+    local padding = "   " -- Space between gauge and info
+
+    if line_index == 1 then
+        -- Combat Info
+        if GZ.combat and GZ.combat.active then
+            extras = string.format("<255,100,100>[Target: %s (%d%%)]", GZ.combat.target_name or "Unknown",
+                GZ.combat.target_health or 0)
+        end
+    elseif line_index == 2 then
+        -- Level Info
+        if GZ.player and GZ.player.level then
+            extras = string.format("<100,255,100>[Lvl: %d  TNL: %d]", GZ.player.level, GZ.player.tnl or 0)
+        end
+    elseif line_index == 3 then
+        -- Mobs & AFK
+        if GZ.mobs_in_room and GZ.mobs_in_room > 0 then
+            extras = string.format("<200,200,100>[Mobs: %d]", GZ.mobs_in_room)
+        end
+        if GZ.player and GZ.player.afk then
+            extras = extras .. " <255,255,0>[AFK]"
+        end
+    end
+
+    if extras ~= "" then
+        return padding .. extras
+    else
+        return ""
+    end
+end
+
 function StatusBar.update_all()
     if not StatusBar.console then return end
 
     StatusBar.console:clear()
 
-    local hp = StatusBar.update_gauge(StatusBar.health, "HP:", msdp.HEALTH, msdp.HEALTH_MAX)
-    local mp = StatusBar.update_gauge(StatusBar.mana, "MP:", msdp.MANA, msdp.MANA_MAX)
-    local mv = StatusBar.update_gauge(StatusBar.movement, "MV:", msdp.MOVEMENT, msdp.MOVEMENT_MAX)
+    local hp = StatusBar.update_gauge(StatusBar.health, "HP:", msdp.HEALTH, msdp.HEALTH_MAX) ..
+        StatusBar.get_extra_info(1)
+    local mp = StatusBar.update_gauge(StatusBar.mana, "MP:", msdp.MANA, msdp.MANA_MAX) .. StatusBar.get_extra_info(2)
+    local mv = StatusBar.update_gauge(StatusBar.movement, "MV:", msdp.MOVEMENT, msdp.MOVEMENT_MAX) ..
+        StatusBar.get_extra_info(3)
 
     -- Print nicely formatted lines using decho (for hex support)
     StatusBar.console:decho(hp .. "\n")
