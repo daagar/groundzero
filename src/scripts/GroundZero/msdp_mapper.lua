@@ -95,6 +95,22 @@ local function update_exits(vnum, exit_list)
     end
 end
 
+
+local opposite_dirs = {
+    north = "south",
+    south = "north",
+    west = "east",
+    east = "west",
+    northwest = "southeast",
+    southeast = "northwest",
+    northeast = "southwest",
+    southwest = "northeast",
+    up = "down",
+    down = "up",
+    ["in"] = "out",
+    out = "in"
+}
+
 local function make_room()
     local info = map.room_info
     if not info or not info.vnum then return end
@@ -166,9 +182,23 @@ local function make_room()
 
     update_exits(info.vnum, info.exits)
 
-    -- Bidirectional linking with previous room
+    -- Auto-link back from any existing neighbors
+    for dir, id in pairs(info.exits) do
+        if getRoomName(id) then
+            local long_dir = resolve_dir(dir)
+            local back_dir = opposite_dirs[long_dir]
+            if back_dir then
+                local neighbor_exits = getRoomExits(id)
+                -- Only link back if it's not already linked to something else
+                if not neighbor_exits or not neighbor_exits[back_dir] then
+                    setExit(id, info.vnum, back_dir)
+                end
+            end
+        end
+    end
+
+    -- Explicit bidirectional linking with previous room if missed by generic loop (one-way entry)
     if map.prev_info and map.prev_info.vnum and getRoomName(map.prev_info.vnum) then
-        -- Link Previous -> Current
         if map.prev_info.exits then
             for k, v in pairs(map.prev_info.exits) do
                 if v == info.vnum then
@@ -176,16 +206,6 @@ local function make_room()
                     if dir then
                         setExit(map.prev_info.vnum, info.vnum, dir)
                     end
-                end
-            end
-        end
-
-        -- Link Current -> Previous (Force specific exit to be a link instead of stub)
-        for k, v in pairs(info.exits) do
-            if v == map.prev_info.vnum then
-                local dir = resolve_dir(k)
-                if dir then
-                    setExit(info.vnum, map.prev_info.vnum, dir)
                 end
             end
         end
