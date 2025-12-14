@@ -166,8 +166,9 @@ local function make_room()
 
     update_exits(info.vnum, info.exits)
 
-    -- Link back from previous room to current room
+    -- Bidirectional linking with previous room
     if map.prev_info and map.prev_info.vnum and getRoomName(map.prev_info.vnum) then
+        -- Link Previous -> Current
         if map.prev_info.exits then
             for k, v in pairs(map.prev_info.exits) do
                 if v == info.vnum then
@@ -175,6 +176,16 @@ local function make_room()
                     if dir then
                         setExit(map.prev_info.vnum, info.vnum, dir)
                     end
+                end
+            end
+        end
+
+        -- Link Current -> Previous (Force specific exit to be a link instead of stub)
+        for k, v in pairs(info.exits) do
+            if v == map.prev_info.vnum then
+                local dir = resolve_dir(k)
+                if dir then
+                    setExit(info.vnum, map.prev_info.vnum, dir)
                 end
             end
         end
