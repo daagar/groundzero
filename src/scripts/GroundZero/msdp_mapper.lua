@@ -12,13 +12,16 @@ local terrain_types = {
     -- used to make rooms of different terrain types have different colors
     -- add a new entry for each terrain type, and set the color with RGB values
     -- each id value must be unique, terrain types not listed here will use mapper default color
-    ["Inside"] = { id = 1, r = 130, g = 130, b = 130 },
-    ["City"]   = { id = 2, r = 200, g = 200, b = 200 },
-    ["Field"]  = { id = 3, r = 0, g = 170, b = 0 },
-    ["Forest"] = { id = 4, r = 0, g = 122, b = 0 },
-    ["Hills"]  = { id = 5, r = 122, g = 69, b = 0 },
-    ["Smooth"] = { id = 6, r = 40, g = 40, b = 40 },
-    ["Desert"] = { id = 7, r = 168, g = 139, b = 50 },
+    ["Inside"]   = { id = 1, r = 130, g = 130, b = 130 },
+    ["Moutains"] = { id = 2, r = 200, g = 200, b = 200 },
+    ["Field"]    = { id = 3, r = 0, g = 170, b = 0 },
+    ["Forest"]   = { id = 4, r = 0, g = 122, b = 0 },
+    ["Hills"]    = { id = 5, r = 122, g = 69, b = 0 },
+    ["Smooth"]   = { id = 6, r = 40, g = 40, b = 40 },
+    ["Swamp"]    = { id = 7, r = 42, g = 64, b = 49 },
+    ["Tundra"]   = { id = 8, r = 96, g = 99, b = 38 },
+    ["Water"]    = { id = 9, r = 51, g = 114, b = 145 },
+    ["Desert"]   = { id = 10, r = 173, g = 143, b = 54 },
 }
 
 -- list of possible movement directions and appropriate coordinate changes
@@ -179,12 +182,6 @@ local function handle_move()
 end
 
 local function config()
-    sendMSDP("REPORT", "ROOM_VNUM")
-    sendMSDP("REPORT", "ROOM_NAME")
-    sendMSDP("REPORT", "AREA_NAME")
-    sendMSDP("REPORT", "ROOM_EXITS")
-    sendMSDP("REPORT", "TERRAIN")
-
     -- setting terrain colors
     for k, v in pairs(terrain_types) do
         setCustomEnvColor(v.id + 16, v.r, v.g, v.b, 255)
@@ -233,11 +230,7 @@ function map.eventHandler(event, ...)
         else
             shift_room(dir)
         end
-    end
-end
-
-function map.protocolHandler(event, protocol)
-    if protocol == "MSDP" then
+    elseif event == "sysConnectionEvent" or event == "sysInstall" then
         config()
     end
 end
@@ -253,7 +246,6 @@ function parseDirections(str)
 end
 
 registerAnonymousEventHandler("onNewRoom", "map.eventHandler")
--- registerAnonymousEventHandler("msdp.ROOM_VNUM","map.eventHandler")
--- registerAnonymousEventHandler("msdp.TERRAIN","map.eventHandler")
 registerAnonymousEventHandler("shiftRoom", "map.eventHandler")
-registerAnonymousEventHandler("sysProtocolEnabled", "map.protocolHandler")
+registerAnonymousEventHandler("sysConnectionEvent", "map.eventHandler")
+registerAnonymousEventHandler("sysInstall", "map.eventHandler")

@@ -4,61 +4,61 @@ gossip.config = gossip.config or {
     y = "0%",
     width = "30%",
     height = "30%",
-    name = "gossipContainer",
-    consoleName = "gossipConsole"
+    consoleName = "GossipEMCO"
 }
 
+-- Try to require EMCO, assume it's available via MDK
+local EMCO = require("MDK.emco")
+
 function gossip.setup()
-    -- Create the container
+    -- Create the Adjustable Container
     gossip.container = Adjustable.Container:new({
-        name = gossip.config.name,
+        name = "gossipContainer",
         x = gossip.config.x,
         y = gossip.config.y,
         width = gossip.config.width,
         height = gossip.config.height,
-        titleText = "Gossip",
-        titleTxtColor = "white",
-        padding = 5,
-        adjLabelstyle = "background-color:rgba(0,0,0,100%); border: 2px solid #505050;",
+        titleText = "GOSSIP", -- Caps for that industrial feel
+        titleTxtColor = "#ff6600",
+        adjLabelstyle = "background-color:rgba(20,20,20,100%); border: 2px solid #202020;",
     })
 
-    -- Create a MiniConsole inside the container to hold the text
-    gossip.console = Geyser.MiniConsole:new({
+    -- Create the EMCO object inside the container
+    gossip.emco = EMCO:new({
         name = gossip.config.consoleName,
         x = 0,
         y = 25,
         width = "100%",
         height = "-25",
-        autoWrap = true,
-        color = "black",
-        scrollBar = true,
+        allTab = true,
+        allTabName = "All",
+        timestamp = true,
+        timestampFormat = "HH:mm",
+        consoleColor = "black",
+        activeTabFGColor = "black",     -- Black text on orange bg
+        inactiveTabFGColor = "#ff6600", -- Orange text on dark bg
+        activeTabBGColor = "#ff6600",   -- Bright Deep Orange
+        inactiveTabBGColor = "#202020", -- Dark Grey
+        -- Ensure text is readable
+        font = "Bitstream Vera Sans Mono",
         fontSize = 10,
+        gap = 2, -- Slight gap between tabs
+        tabBold = true,
     }, gossip.container)
-end
 
-function gossip.display_line(is_start)
-    if is_start then
-        local timestamp = getTime(true, "hh:mm")
-        gossip.console:echo("[" .. timestamp .. "] ")
-    else
-        gossip.console:echo("\n") -- Ensure new line for continuation
-    end
-
-    selectCurrentLine()
-    copy()
-    appendBuffer(gossip.config.consoleName)
+    -- Add the Gossip tab
+    gossip.emco:addTab("Gossip")
 end
 
 function gossip.start_capture(name, message)
-    if not gossip.console then
+    if not gossip.emco then
         gossip.setup()
     end
 
-    -- Display the first line
-    gossip.display_line(true)
+    -- Append the current line to the Gossip tab (and All tab)
+    gossip.emco:append("Gossip")
 
     -- Check if the message ends with a quote
-    -- We use string.match to check the last character
     if not string.match(message, "'$") then
         -- It's a multi-line message
         enableTrigger("Gossip Capture")
@@ -66,8 +66,12 @@ function gossip.start_capture(name, message)
 end
 
 function gossip.continue_capture(line)
-    -- Display the continuation line
-    gossip.display_line(false)
+    if not gossip.emco then
+        gossip.setup()
+    end
+
+    -- Append the continuation line
+    gossip.emco:append("Gossip")
 
     -- Check if this line ends the message
     if string.match(line, "'$") then
