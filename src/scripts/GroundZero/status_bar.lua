@@ -5,10 +5,10 @@ local TextGauge = require("MDK.textgauge")
 
 -- Configuration
 local config = {
-    height = "100px", -- Increased height for stacked bars
+    height = "135px", -- Increased height for 4 stacked bars
     fontSize = 14,
     font = "Cascadia Code",
-    fillChar = ":",
+    fillChar = "#",
     emptyChar = "-",
     fillColor = "#ff6600",  -- Bright Deep Orange
     emptyColor = "#333333", -- Dark Metallic Grey
@@ -22,7 +22,7 @@ function StatusBar.create()
         name = "StatusBarContainer",
         titleText = "", -- Remove title text
         x = 0,
-        y = -100,       -- Docked to bottom (matching height)
+        y = "-135px",   -- Docked to bottom (matching height)
         width = "100%",
         height = config.height,
         adjLabelstyle = "background-color:rgba(20,20,20,100%); border: 2px solid #202020;",
@@ -59,6 +59,19 @@ function StatusBar.create()
     StatusBar.mana = TextGauge:new(gaugeOpts)
     StatusBar.movement = TextGauge:new(gaugeOpts)
 
+    -- Target gauge with red fill
+    StatusBar.target = TextGauge:new({
+        width = 50,
+        fillCharacter = config.fillChar,
+        emptyCharacter = config.emptyChar,
+        fillColor = "red",
+        emptyColor = config.emptyColor,
+        overflowColor = config.overflowColor,
+        valueColor = config.labelColor,
+        showPercent = false,
+        format = "d",
+    })
+
     -- Set initial text
     StatusBar.update_all()
 end
@@ -89,7 +102,7 @@ function StatusBar.get_extra_info(line_index)
         if GZ.combat and GZ.combat.active then
             local targetName = GZ.combat.target_name or "Unknown"
             local targetHealth = GZ.combat.target_health or 0
-            extras = string.format("<255,100,100>[Target: %s (%d%%)]", targetName, targetHealth) or ""
+            extras = string.format("<255,100,100>[Target: %s]", targetName) or ""
         end
     elseif line_index == 2 then
         -- Level Info
@@ -121,6 +134,22 @@ function StatusBar.update_all()
 
     StatusBar.console:clear()
 
+    -- 1. Target Line (Row 1)
+    local target_line = "\n" -- Placeholder for empty line if no target
+    if GZ.combat and GZ.combat.active then
+        -- local name = GZ.combat.target_name or "Target"
+        local name = "TGT"
+        local hp_pct = tonumber(GZ.combat.target_health) or 0
+        local bar = StatusBar.target:setValue(hp_pct, 100)
+
+        -- Format: Name (truncated) Percent Bar
+        -- Truncate name to 9 chars to align loosely with "HP:  123/123" (approx 14 chars)
+        -- %-9.9s pads to 9, truncates at 9.
+        -- <255,100,100> is a light red for the text
+        target_line = string.format("<255,100,100>%-9.9s %3d%% %s\n", name, hp_pct, bar)
+    end
+
+    -- 2. Player Stats (Rows 2-4)
     local hp = StatusBar.update_gauge(StatusBar.health, "HP:", msdp.HEALTH, msdp.HEALTH_MAX) ..
         StatusBar.get_extra_info(1)
     local mp = StatusBar.update_gauge(StatusBar.mana, "MP:", msdp.MANA, msdp.MANA_MAX) .. StatusBar.get_extra_info(2)
@@ -128,6 +157,7 @@ function StatusBar.update_all()
         StatusBar.get_extra_info(3)
 
     -- Print nicely formatted lines using decho (for hex support)
+    StatusBar.console:decho(target_line)
     StatusBar.console:decho(hp .. "\n")
     StatusBar.console:decho(mp .. "\n")
     StatusBar.console:decho(mv .. "\n")
