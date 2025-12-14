@@ -67,8 +67,54 @@ local exitmap = {
     [12] = "out",
 }
 
+local function parseDirections(str)
+    local exit_map = {}
+    if not str then return exit_map end
+    for key, value in string.gmatch(str, "(%w+)%s*=%s*(%d+)") do
+        exit_map[key] = tonumber(value)
+    end
+    return exit_map
+end
+
+local function resolve_dir(dir)
+    if not dir then return nil end
+    dir = string.lower(dir)
+    return exits[dir] or dir
+end
+
+local function update_exits(vnum, exit_list)
+    for dir, id in pairs(exit_list) do
+        local long_dir = resolve_dir(dir)
+        if long_dir then
+            if getRoomName(id) then
+                setExit(vnum, id, long_dir)
+            else
+                setExitStub(vnum, long_dir, true)
+            end
+        end
+    end
+end
+
+
+local opposite_dirs = {
+    north = "south",
+    south = "north",
+    west = "east",
+    east = "west",
+    northwest = "southeast",
+    southeast = "northwest",
+    northeast = "southwest",
+    southwest = "northeast",
+    up = "down",
+    down = "up",
+    ["in"] = "out",
+    out = "in"
+}
+
 local function make_room()
     local info = map.room_info
+    if not info or not info.vnum then return end
+
     local coords = { 0, 0, 0 }
     addRoom(info.vnum)
     setRoomName(info.vnum, info.name)
@@ -76,15 +122,15 @@ local function make_room()
     local areaID = areas[info.area]
     if not areaID then
         areaID = addAreaName(info.area)
-    else
+    elseif map.prev_info and map.prev_info.vnum and getRoomName(map.prev_info.vnum) then
         coords = { getRoomCoordinates(map.prev_info.vnum) }
         local shift = { 0, 0, 0 }
         local found = false
 
         -- try to find backlink
         for k, v in pairs(info.exits) do
-            local dir = exits[k] or k
-            if v == map.prev_info.vnum and move_vectors[dir] then
+            local dir = resolve_dir(k)
+            if v == map.prev_info.vnum and dir and move_vectors[dir] then
                 shift = move_vectors[dir]
                 found = true
                 break
@@ -94,8 +140,8 @@ local function make_room()
         -- try to find forward link
         if not found and map.prev_info.exits then
             for k, v in pairs(map.prev_info.exits) do
-                local dir = exits[k] or k
-                if v == info.vnum and move_vectors[dir] then
+                local dir = resolve_dir(k)
+                if v == info.vnum and dir and move_vectors[dir] then
                     local vec = move_vectors[dir]
                     shift = { -vec[1], -vec[2], -vec[3] }
                     found = true
@@ -123,37 +169,62 @@ local function make_room()
                 end
                 if modified then
                     setRoomCoordinates(id, rcoords[1], rcoords[2], rcoords[3])
-                    echo("Room " ..
-                        id .. " shifted to " .. rcoords[1] .. ", " .. rcoords[2] .. ", " .. rcoords[3] .. "\n")
                 end
             end
         end
     end
     setRoomArea(info.vnum, areaID)
     setRoomCoordinates(info.vnum, coords[1], coords[2], coords[3])
-    --echo("Room " .. info.vnum .. " created at " .. coords[1] .. ", " .. coords[2] .. ", " .. coords[3] .. "\n")
+
     if terrain_types[info.terrain] then
-        setRoomEnv(info.vnum, terrain_types[info.terrain].id)
+        setRoomEnv(info.vnum, terrain_types[info.terrain].id + 16)
     end
+
+    update_exits(info.vnum, info.exits)
+
+    -- Auto-link back from any existing neighbors
     for dir, id in pairs(info.exits) do
-        -- need to see how special exits are represented to handle those properly here
         if getRoomName(id) then
-            setExit(info.vnum, id, dir)
-        else
-            setExitStub(info.vnum, dir, true)
+            local long_dir = resolve_dir(dir)
+            local back_dir = opposite_dirs[long_dir]
+            if back_dir then
+                local neighbor_exits = getRoomExits(id)
+                -- Only link back if it's not already linked to something else
+                if not neighbor_exits or not neighbor_exits[back_dir] then
+                    setExit(id, info.vnum, back_dir)
+                end
+            end
+        end
+    end
+
+    -- Explicit bidirectional linking with previous room if missed by generic loop (one-way entry)
+    if map.prev_info and map.prev_info.vnum and getRoomName(map.prev_info.vnum) then
+        if map.prev_info.exits then
+            for k, v in pairs(map.prev_info.exits) do
+                if v == info.vnum then
+                    local dir = resolve_dir(k)
+                    if dir then
+                        setExit(map.prev_info.vnum, info.vnum, dir)
+                    end
+                end
+            end
         end
     end
 end
 
 local function shift_room(dir)
     local ID = map.room_info.vnum
+    if not ID or not getRoomName(ID) then return end
+
     local x, y, z = getRoomCoordinates(ID)
-    local x1, y1, z1 = unpack(move_vectors[dir])
-    x = x + x1
-    y = y + y1
-    z = z + z1
-    setRoomCoordinates(ID, x, y, z)
-    updateMap()
+    local vector = move_vectors[dir]
+    if vector then
+        x = x + vector[1]
+        y = y + vector[2]
+        z = z + vector[3]
+        setRoomCoordinates(ID, x, y, z)
+        updateMap()
+    end
 end
 
 local function set_terrain(terrain, vnum)
@@ -164,18 +235,12 @@ end
 
 local function handle_move()
     local info = map.room_info
+    if not info or not info.vnum then return end
 
     if not getRoomName(info.vnum) then
         make_room()
     else
-        for dir, id in pairs(info.exits) do
-            -- need to see how special exits are represented to handle those properly here
-            if getRoomName(id) then
-                setExit(info.vnum, id, dir)
-            else
-                setExitStub(info.vnum, dir, true)
-            end
-        end
+        update_exits(info.vnum, info.exits)
     end
     set_terrain(info.terrain, info.vnum)
     centerview(map.room_info.vnum)
@@ -210,7 +275,7 @@ end
 
 function map.eventHandler(event, ...)
     if event == "onNewRoom" then
-        map.prev_info = map.room_info
+        map.prev_info = map.room_info or {}
         map.room_info = {
             vnum = tonumber(msdp.ROOM_VNUM),
             area = msdp.AREA_NAME,
@@ -218,15 +283,12 @@ function map.eventHandler(event, ...)
             exits = msdp.ROOM_EXITS,
             terrain = msdp.TERRAIN
         }
-        map.room_info.exits = parseDirections(map.room_info.exits)
-        -- for k,v in pairs(directions) do
-        -- map.room_info.exits[k] = tonumber(v)
-        -- end
+        map.room_info.exits = parseDirections(map.room_info.exits or "")
         handle_move()
     elseif event == "shiftRoom" then
-        local dir = exits[arg[1]] or arg[1]
-        if not table.contains(exits, dir) then
-            echo("Error: Invalid direction '" .. dir .. "'.")
+        local dir = resolve_dir(arg[1])
+        if not dir then
+            echo("Error: Invalid direction '" .. (arg[1] or "") .. "'.")
         else
             shift_room(dir)
         end
@@ -235,17 +297,12 @@ function map.eventHandler(event, ...)
     end
 end
 
-function parseDirections(str)
-    local map = {}
-    -- %w+ matches one or more alphanumeric characters (the key)
-    -- %d+ matches one or more digits (the value)
-    for key, value in string.gmatch(str, "(%w+)%s*=%s*(%d+)") do
-        map[key] = tonumber(value) -- store the numeric value
+-- Event Handler Registration with cleanup
+map.handlerIDs = map.handlerIDs or {}
+local events = { "onNewRoom", "shiftRoom", "sysConnectionEvent", "sysInstall" }
+for _, event in ipairs(events) do
+    if map.handlerIDs[event] then
+        killAnonymousEventHandler(map.handlerIDs[event])
     end
-    return map
+    map.handlerIDs[event] = registerAnonymousEventHandler(event, "map.eventHandler")
 end
-
-registerAnonymousEventHandler("onNewRoom", "map.eventHandler")
-registerAnonymousEventHandler("shiftRoom", "map.eventHandler")
-registerAnonymousEventHandler("sysConnectionEvent", "map.eventHandler")
-registerAnonymousEventHandler("sysInstall", "map.eventHandler")
