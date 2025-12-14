@@ -79,33 +79,59 @@ local function make_room()
     else
         coords = { getRoomCoordinates(map.prev_info.vnum) }
         local shift = { 0, 0, 0 }
+        local found = false
+
+        -- try to find backlink
         for k, v in pairs(info.exits) do
-            if v == map.prev_info.vnum and move_vectors[k] then
-                shift = move_vectors[k]
+            local dir = exits[k] or k
+            if v == map.prev_info.vnum and move_vectors[dir] then
+                shift = move_vectors[dir]
+                found = true
                 break
             end
         end
+
+        -- try to find forward link
+        if not found and map.prev_info.exits then
+            for k, v in pairs(map.prev_info.exits) do
+                local dir = exits[k] or k
+                if v == info.vnum and move_vectors[dir] then
+                    local vec = move_vectors[dir]
+                    shift = { -vec[1], -vec[2], -vec[3] }
+                    found = true
+                end
+            end
+        end
+
         for n = 1, 3 do
             coords[n] = coords[n] - shift[n]
         end
+
         -- map stretching
         local overlap = getRoomsByPosition(areaID, coords[1], coords[2], coords[3])
-        if not table.is_empty(overlap) then
+        if found and not table.is_empty(overlap) then
             local rooms = getAreaRooms(areaID)
             local rcoords
             for _, id in ipairs(rooms) do
                 rcoords = { getRoomCoordinates(id) }
+                local modified = false
                 for n = 1, 3 do
                     if shift[n] ~= 0 and (rcoords[n] - coords[n]) * shift[n] <= 0 then
                         rcoords[n] = rcoords[n] - shift[n]
+                        modified = true
                     end
                 end
-                setRoomCoordinates(id, rcoords[1], rcoords[2], rcoords[3])
+                if modified then
+                    setRoomCoordinates(id, rcoords[1], rcoords[2], rcoords[3])
+                    echo("Room " ..
+                        id .. " shifted to " .. rcoords[1] .. ", " .. rcoords[2] .. ", " .. rcoords[3] .. "\n")
+                end
             end
         end
     end
     setRoomArea(info.vnum, areaID)
     setRoomCoordinates(info.vnum, coords[1], coords[2], coords[3])
+    --echo("Room " .. info.vnum .. " created at " .. coords[1] .. ", " .. coords[2] .. ", " .. coords[3] .. "\n")
     if terrain_types[info.terrain] then
         setRoomEnv(info.vnum, terrain_types[info.terrain].id)
     end

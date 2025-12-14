@@ -141,8 +141,7 @@ function StatusBar.eventHandler(event, ...)
     StatusBar.update_all()
 end
 
-registerAnonymousEventHandler("sysConnectionEvent", "StatusBar.eventHandler")
-registerAnonymousEventHandler("sysInstall", "StatusBar.eventHandler")
+registerAnonymousEventHandler("sysProtocolEnabled", "StatusBar.protocolHandler")
 registerAnonymousEventHandler("msdp.HEALTH", "StatusBar.eventHandler")
 registerAnonymousEventHandler("msdp.HEALTH_MAX", "StatusBar.eventHandler")
 registerAnonymousEventHandler("msdp.MANA", "StatusBar.eventHandler")
