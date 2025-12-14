@@ -1,22 +1,18 @@
 [
   {
+    "name": "initialize",
+    "eventHandlerList": []
+  },
+  {
     "name": "msdp_mapper",
-    "eventHandlerList": [
-      "sysInstall"
-    ]
+    "eventHandlerList": []
   },
   {
     "name": "gossip",
-    "eventHandlerList": [
-      "sysInstall",
-      "sysLoadEvent"
-    ]
+    "eventHandlerList": []
   },
   {
     "name": "status_bar",
-    "eventHandlerList": [
-      "sysInstall",
-      "sysConnectionEvent"
-    ]
+    "eventHandlerList": []
   }
 ]

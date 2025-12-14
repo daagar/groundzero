@@ -152,12 +152,6 @@ local function handle_move()
 end
 
 local function config()
-    sendMSDP("REPORT", "ROOM_VNUM")
-    sendMSDP("REPORT", "ROOM_NAME")
-    sendMSDP("REPORT", "AREA_NAME")
-    sendMSDP("REPORT", "ROOM_EXITS")
-    sendMSDP("REPORT", "TERRAIN")
-
     -- setting terrain colors
     for k, v in pairs(terrain_types) do
         setCustomEnvColor(v.id + 16, v.r, v.g, v.b, 255)
@@ -206,7 +200,7 @@ function map.eventHandler(event, ...)
         else
             shift_room(dir)
         end
-    elseif event == "sysConnectionEvent" then
+    elseif event == "sysConnectionEvent" or event == "sysInstall" then
         config()
     end
 end
@@ -226,3 +220,4 @@ registerAnonymousEventHandler("onNewRoom", "map.eventHandler")
 -- registerAnonymousEventHandler("msdp.TERRAIN","map.eventHandler")
 registerAnonymousEventHandler("shiftRoom", "map.eventHandler")
 registerAnonymousEventHandler("sysConnectionEvent", "map.eventHandler")
+registerAnonymousEventHandler("sysInstall", "map.eventHandler")

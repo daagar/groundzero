@@ -20,7 +20,7 @@ function gossip.setup()
         height = gossip.config.height,
         titleText = "GOSSIP", -- Caps for that industrial feel
         titleTxtColor = "#ff6600",
-        adjLabelstyle = "background-color:rgba(20,20,20,100%); border: 2px solid #ff6600;",
+        adjLabelstyle = "background-color:rgba(20,20,20,100%); border: 2px solid #202020;",
     })
 
     -- Create the EMCO object inside the container
