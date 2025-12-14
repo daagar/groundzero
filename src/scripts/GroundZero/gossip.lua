@@ -18,7 +18,9 @@ function gossip.setup()
         y = gossip.config.y,
         width = gossip.config.width,
         height = gossip.config.height,
-        adjLabelstyle = "background-color:rgba(50,50,50,100%); border: 2px solid #505050;",
+        titleText = "GOSSIP", -- Caps for that industrial feel
+        titleTxtColor = "#ff6600",
+        adjLabelstyle = "background-color:rgba(20,20,20,100%); border: 2px solid #ff6600;",
     })
 
     -- Create the EMCO object inside the container
@@ -33,12 +35,15 @@ function gossip.setup()
         timestamp = true,
         timestampFormat = "HH:mm",
         consoleColor = "black",
-        activeTabFGColor = "white",
-        inactiveTabFGColor = "grey",
-        activeTabBGColor = "blue", -- A default distinct color
+        activeTabFGColor = "black",     -- Black text on orange bg
+        inactiveTabFGColor = "#ff6600", -- Orange text on dark bg
+        activeTabBGColor = "#ff6600",   -- Bright Deep Orange
+        inactiveTabBGColor = "#202020", -- Dark Grey
         -- Ensure text is readable
         font = "Bitstream Vera Sans Mono",
         fontSize = 10,
+        gap = 2, -- Slight gap between tabs
+        tabBold = true,
     }, gossip.container)
 
     -- Add the Gossip tab
