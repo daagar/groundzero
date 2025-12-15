@@ -164,14 +164,16 @@ function StatusBar.update_all()
 end
 
 function StatusBar.eventHandler(event, ...)
-    if event == "sysConnectionEvent" or event == "sysInstall" then
+    if event == "sysConnectionEvent" or event == "sysInstall" or event == "sysProtocolEnabled" then
         StatusBar.create()
     end
     -- Trigger generic update for all related events for simplicity with text console redrawing
     StatusBar.update_all()
 end
 
-registerAnonymousEventHandler("sysProtocolEnabled", "StatusBar.protocolHandler")
+registerAnonymousEventHandler("sysProtocolEnabled", "StatusBar.eventHandler")
+registerAnonymousEventHandler("sysConnectionEvent", "StatusBar.eventHandler")
+registerAnonymousEventHandler("sysInstall", "StatusBar.eventHandler")
 registerAnonymousEventHandler("msdp.HEALTH", "StatusBar.eventHandler")
 registerAnonymousEventHandler("msdp.HEALTH_MAX", "StatusBar.eventHandler")
 registerAnonymousEventHandler("msdp.MANA", "StatusBar.eventHandler")

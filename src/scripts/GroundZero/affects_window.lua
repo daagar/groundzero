@@ -28,11 +28,6 @@ function GZ.affects.create()
         dockPosition = "bottom",
     })
 
-    GZ.affects.window:css([[
-        geyser-titlebar { background-color: #FF5733; } /* Orange-Red */
-        geyser-titlebar-text { color: white; }
-    ]])
-
     GZ.affects.console = Geyser.MiniConsole:new({
         name = config.name .. "Console",
         x = 0,
