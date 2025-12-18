@@ -113,7 +113,7 @@ function StatusBar.get_extra_info(line_index)
         end
     elseif line_index == 3 then
         -- Mobs & AFK
-        if GZ.mobs_in_room and GZ.mobs_in_room > 0 then
+        if GZ.mobs_in_room then
             local mobsInRoom = GZ.mobs_in_room or 0
             extras = string.format("<200,200,100>[Mobs: %d]", mobsInRoom) or ""
         end
@@ -180,3 +180,4 @@ registerAnonymousEventHandler("msdp.MANA", "StatusBar.eventHandler")
 registerAnonymousEventHandler("msdp.MANA_MAX", "StatusBar.eventHandler")
 registerAnonymousEventHandler("msdp.MOVEMENT", "StatusBar.eventHandler")
 registerAnonymousEventHandler("msdp.MOVEMENT_MAX", "StatusBar.eventHandler")
+registerAnonymousEventHandler("GZ.update_ui", "StatusBar.update_all")

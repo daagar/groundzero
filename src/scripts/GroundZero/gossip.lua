@@ -86,3 +86,14 @@ end
 -- Initialize on load
 registerAnonymousEventHandler("sysLoadEvent", "gossip.init")
 registerAnonymousEventHandler("sysInstall", "gossip.init")
+
+function gossip.on_start(event, name, message)
+    gossip.start_capture(name, message)
+end
+
+function gossip.on_message(event, line)
+    gossip.continue_capture(line)
+end
+
+registerAnonymousEventHandler("GZ.gossip_start", "gossip.on_start")
+registerAnonymousEventHandler("GZ.gossip_message", "gossip.on_message")

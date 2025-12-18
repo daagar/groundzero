@@ -1,1 +1,1 @@
-gossip.continue_capture(matches[1])
+raiseEvent("GZ.gossip_message", matches[1])

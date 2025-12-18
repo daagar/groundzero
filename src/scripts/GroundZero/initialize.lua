@@ -12,3 +12,15 @@ function initMSDP(_, protocol)
 end
 
 registerAnonymousEventHandler("sysProtocolEnabled", initMSDP)
+
+function onExit()
+    saveWindowLayout()
+end
+
+registerAnonymousEventHandler("sysExitEvent", onExit)
+
+function onLoad()
+    loadWindowLayout()
+end
+
+registerAnonymousEventHandler("sysLoadEvent", onLoad)

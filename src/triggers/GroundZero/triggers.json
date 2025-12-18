@@ -55,6 +55,22 @@
         ]
     },
     {
+        "name": "Experience Trigger",
+        "isActive": "yes",
+        "isFolder": "no",
+        "multiline": "no",
+        "multilineDelta": "0",
+        "matchall": "no",
+        "filter": "no",
+        "fireLength": "0",
+        "patterns": [
+            {
+                "pattern": "^You receive (\\d+) experience points\\.$",
+                "type": "regex"
+            }
+        ]
+    },
+    {
         "name": "Affects Capture",
         "isActive": "yes",
         "isFolder": "yes",
@@ -86,7 +102,7 @@
                 "fireLength": "0",
                 "patterns": [
                     {
-                        "pattern": "^([A-Za-z ]+)\\s*:\\s*\\[(.*?)\\]\\s*$",
+                        "pattern": "^([A-Za-z ]+)\\s*:\\s*\\[([^\\]]+)\\]\\s*$",
                         "type": "regex"
                     }
                 ]
@@ -137,6 +153,74 @@
         "patterns": [
             {
                 "pattern": "^The bark-like texture surrounding you fades away as you cease concentration\\.$",
+                "type": "regex"
+            }
+        ]
+    },
+    {
+        "name": "Bark Skin Start",
+        "isActive": "yes",
+        "isFolder": "no",
+        "multiline": "no",
+        "multilineDelta": "0",
+        "matchall": "no",
+        "filter": "no",
+        "fireLength": "0",
+        "patterns": [
+            {
+                "pattern": "^You invoke your bark skin, taking on a rough, tree-like appearance\\.$",
+                "type": "regex"
+            }
+        ]
+    },
+    {
+        "name": "Door Manager",
+        "isActive": "yes",
+        "isFolder": "no",
+        "multiline": "no",
+        "multilineDelta": "0",
+        "matchall": "no",
+        "filter": "no",
+        "fireLength": "0",
+        "patterns": [
+            {
+                "pattern": "^The (door|gate|trapdoor)(?:.*)(?:is|seem to be|seems to be) closed\\.$",
+                "type": "regex"
+            },
+            {
+                "pattern": "^The .* (doors|door|gate|trapdoor) (?:seem|seems) to be closed\\.$",
+                "type": "regex"
+            }
+        ]
+    },
+    {
+        "name": "Lock Manager",
+        "isActive": "yes",
+        "isFolder": "no",
+        "multiline": "no",
+        "multilineDelta": "0",
+        "matchall": "no",
+        "filter": "no",
+        "fireLength": "0",
+        "patterns": [
+            {
+                "pattern": "^It is locked, and you don't know how to open it\\.$",
+                "type": "regex"
+            }
+        ]
+    },
+    {
+        "name": "Death Trigger",
+        "isActive": "yes",
+        "isFolder": "no",
+        "multiline": "no",
+        "multilineDelta": "0",
+        "matchall": "no",
+        "filter": "no",
+        "fireLength": "0",
+        "patterns": [
+            {
+                "pattern": "^You are dead!  Sorry...$",
                 "type": "regex"
             }
         ]

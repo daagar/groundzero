@@ -25,8 +25,11 @@ When writing Lua code for this project, refer to the following documentation:
     *   Extra documentation for MDK, including many details about stylesheets. 
     *   **IMPORTANT**: This is the primary reference for all MDK-specific API calls, including EMCO.
     *   **IMPORTANT**: Always check here for functions, examples, and ways of doing things that are not covered by the Mudlet Manual.
+5.  **Mudlet Scripting Manual**: [Manual:Scripting](https://wiki.mudlet.org/w/Special:MyLanguage/Manual:Scripting)
+    *   Extra documentation for Mudlet, including many details about triggers, aliases, and more.
 
 ## Project Structure
 
 *   `mfile`: Muddler project configuration.
 *   `src/scripts/GroundZero/`: Contains the Lua scripts and `scripts.json` definition.
+*   **IMPORTANT**: Triggers should almost always raise an event rather than perform actions directly. This allows for greater modularity and reusability.

@@ -18,5 +18,21 @@
   {
     "name": "affects_window",
     "eventHandlerList": []
+  },
+  {
+    "name": "movement",
+    "eventHandlerList": []
+  },
+  {
+    "name": "death_handler",
+    "eventHandlerList": []
+  },
+  {
+    "name": "prompt_handler",
+    "eventHandlerList": []
+  },
+  {
+    "name": "spell_handler",
+    "eventHandlerList": []
   }
 ]

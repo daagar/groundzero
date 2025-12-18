@@ -1,1 +1,1 @@
-gossip.start_capture(matches[2], matches[3])
+raiseEvent("GZ.gossip_start", matches[2], matches[3])

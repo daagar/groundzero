@@ -259,7 +259,9 @@ local function config()
         y = info.y,
         width = info.width,
         height = info.height,
-        adjLabelstyle = "background-color:rgba(50,50,50,100%); border: 2px solid #505050;",
+        titleText = "MAPPER", -- Caps for that industrial feel
+        titleTxtColor = "#ff6600",
+        adjLabelstyle = "background-color:rgba(20,20,20,100%); border: 2px solid #202020;",
     })
     Geyser.Mapper:new({ name = "myMap", x = 0, y = 0, width = "100%", height = "100%" }, map.container)
 
