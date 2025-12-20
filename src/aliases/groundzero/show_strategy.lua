@@ -1,0 +1,5 @@
+cecho("<cyan>--- Current Combat Strategy ---\n")
+cecho("<yellow>Openers: <white>" .. table.concat(GZ.combat.strategies.openers, ", ") .. "\n")
+cecho("<yellow>In-combat: <white>" .. table.concat(GZ.combat.strategies.in_combat, ", ") .. "\n")
+cecho("<cyan>-------------------------------\n")
+cecho("<grey>To update: strategy <openers|in-combat> skill1, skill2, ...\n")

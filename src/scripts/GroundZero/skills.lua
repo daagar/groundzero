@@ -39,8 +39,8 @@ GZ.classSkills.ranger = {
 -- @return boolean True if the skill can be used, false otherwise.
 function GZ.canUse(skillName, class, level)
     local skill = string.lower(skillName)
-    local charClass = string.lower(class or msdp.CLASS or "")
-    local charLevel = tonumber(level or msdp.LEVEL or 0)
+    local charClass = string.lower(class or msdp.CLASS or GZ.player.class or "")
+    local charLevel = tonumber(level or msdp.LEVEL or GZ.player.level or 0)
 
     if not GZ.classSkills[charClass] then
         return false

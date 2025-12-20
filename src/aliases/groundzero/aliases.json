@@ -1,0 +1,26 @@
+[
+    {
+        "name": "combat_opener",
+        "isActive": "yes",
+        "isFolder": "no",
+        "regex": "^f$"
+    },
+    {
+        "name": "combat_followup",
+        "isActive": "yes",
+        "isFolder": "no",
+        "regex": "^ff$"
+    },
+    {
+        "name": "set_strategy",
+        "isActive": "yes",
+        "isFolder": "no",
+        "regex": "^strategy\\s+(openers|in-combat)\\s+(.*)$"
+    },
+    {
+        "name": "show_strategy",
+        "isActive": "yes",
+        "isFolder": "no",
+        "regex": "^strategy$"
+    }
+]

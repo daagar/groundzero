@@ -1,0 +1,1 @@
+GZ.combat.f()

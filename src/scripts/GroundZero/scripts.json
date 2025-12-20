@@ -42,5 +42,9 @@
   {
     "name": "level_handler",
     "eventHandlerList": []
+  },
+  {
+    "name": "combat",
+    "eventHandlerList": []
   }
 ]
