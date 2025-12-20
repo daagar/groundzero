@@ -204,6 +204,10 @@
         "fireLength": "0",
         "patterns": [
             {
+                "pattern": "^It seems to be locked\\.$",
+                "type": "regex"
+            },
+            {
                 "pattern": "^It is locked, and you don't know how to open it\\.$",
                 "type": "regex"
             }

@@ -40,10 +40,10 @@ function GZ.on_door_closed(event, door)
 end
 
 function GZ.on_door_locked()
-    -- Check if we are a Ranger and have a door/direction to use
-    if msdp.CLASS == "Ranger" and GZ.last_door and GZ.last_dir then
+    -- Check if we have the pick lock skill and have a door/direction to use
+    if GZ.canUse("pick lock") and GZ.last_door and GZ.last_dir then
         send("pick " .. GZ.last_door)
-        send("open " .. GZ.last_door)
+        -- A successful pick lock now automatically opens the door, so send the move command
         send(GZ.last_dir)
     end
 end
