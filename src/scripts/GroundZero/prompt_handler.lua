@@ -12,6 +12,7 @@ function GZ.on_prompt(event, matches)
 
     -- matches[3]: Combat Target Name
     -- matches[4]: Combat Target Health
+    local was_combat = GZ.combat.active
     if matches[3] and matches[3] ~= "" then
         GZ.combat.active = true
         GZ.combat.target_name = matches[3]
@@ -20,6 +21,10 @@ function GZ.on_prompt(event, matches)
         GZ.combat.active = false
         GZ.combat.target_name = nil
         GZ.combat.target_health = nil
+    end
+
+    if was_combat and not GZ.combat.active then
+        raiseEvent("GZ.combat_ended")
     end
 
     -- matches[5]: Level

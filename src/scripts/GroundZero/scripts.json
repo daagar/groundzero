@@ -38,5 +38,9 @@
   {
     "name": "spell_handler",
     "eventHandlerList": []
+  },
+  {
+    "name": "level_handler",
+    "eventHandlerList": []
   }
 ]

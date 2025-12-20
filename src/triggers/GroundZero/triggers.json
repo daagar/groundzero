@@ -71,6 +71,22 @@
         ]
     },
     {
+        "name": "level_trigger",
+        "isActive": "yes",
+        "isFolder": "no",
+        "multiline": "no",
+        "multilineDelta": "0",
+        "matchall": "no",
+        "filter": "no",
+        "fireLength": "0",
+        "patterns": [
+            {
+                "pattern": "^You rise a level!$",
+                "type": "regex"
+            }
+        ]
+    },
+    {
         "name": "affects_capture",
         "isActive": "yes",
         "isFolder": "yes",
