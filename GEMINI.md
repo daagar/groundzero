@@ -33,3 +33,4 @@ When writing Lua code for this project, refer to the following documentation:
 *   `mfile`: Muddler project configuration.
 *   `src/scripts/GroundZero/`: Contains the Lua scripts and `scripts.json` definition.
 *   **IMPORTANT**: Triggers should almost always raise an event rather than perform actions directly. This allows for greater modularity and reusability.
+*   **IMPORTANT**: alias and trigger names should be in snake_case to be Windows and Linux compatible.

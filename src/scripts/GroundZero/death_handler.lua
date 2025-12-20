@@ -15,7 +15,7 @@ function GZ.onDeath()
     -- Class-specific recovery
     if msdp and msdp.CLASS then
         local class = string.lower(msdp.CLASS)
-        local level = msdp.LEVEL
+        local level = tonumber(msdp.LEVEL)
         if class == "ranger" then
             cecho("<green>Ranger detected! Applying buffs...\n")
             if level >= 15 then

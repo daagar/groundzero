@@ -5,7 +5,7 @@
         "isFolder": "yes",
         "children": [
             {
-                "name": "Gossip Capture",
+                "name": "gossip_capture",
                 "isActive": "no",
                 "isFolder": "no",
                 "multiline": "no",
@@ -21,7 +21,7 @@
                 ]
             },
             {
-                "name": "Gossip Trigger",
+                "name": "gossip_trigger",
                 "isActive": "yes",
                 "isFolder": "no",
                 "multiline": "no",
@@ -39,7 +39,7 @@
         ]
     },
     {
-        "name": "Prompt Trigger",
+        "name": "prompt_trigger",
         "isActive": "yes",
         "isFolder": "no",
         "multiline": "no",
@@ -55,7 +55,7 @@
         ]
     },
     {
-        "name": "Experience Trigger",
+        "name": "experience_trigger",
         "isActive": "yes",
         "isFolder": "no",
         "multiline": "no",
@@ -71,12 +71,12 @@
         ]
     },
     {
-        "name": "Affects Capture",
+        "name": "affects_capture",
         "isActive": "yes",
         "isFolder": "yes",
         "children": [
             {
-                "name": "Affects Header",
+                "name": "affects_header",
                 "isActive": "yes",
                 "isFolder": "no",
                 "multiline": "no",
@@ -92,7 +92,7 @@
                 ]
             },
             {
-                "name": "Affects Line",
+                "name": "affects_line",
                 "isActive": "yes",
                 "isFolder": "no",
                 "multiline": "no",
@@ -108,7 +108,7 @@
                 ]
             },
             {
-                "name": "Affects Timer",
+                "name": "affects_timer",
                 "isActive": "yes",
                 "isFolder": "no",
                 "multiline": "no",
@@ -124,7 +124,7 @@
                 ]
             },
             {
-                "name": "Affects Spell",
+                "name": "affects_spell",
                 "isActive": "yes",
                 "isFolder": "no",
                 "multiline": "no",
@@ -142,7 +142,7 @@
         ]
     },
     {
-        "name": "Bark Skin Fade",
+        "name": "bark_skin_fade",
         "isActive": "yes",
         "isFolder": "no",
         "multiline": "no",
@@ -158,7 +158,7 @@
         ]
     },
     {
-        "name": "Bark Skin Start",
+        "name": "bark_skin_start",
         "isActive": "yes",
         "isFolder": "no",
         "multiline": "no",
@@ -174,7 +174,7 @@
         ]
     },
     {
-        "name": "Door Manager",
+        "name": "door_manager",
         "isActive": "yes",
         "isFolder": "no",
         "multiline": "no",
@@ -184,17 +184,17 @@
         "fireLength": "0",
         "patterns": [
             {
-                "pattern": "^The (door|gate|trapdoor)(?:.*)(?:is|seem to be|seems to be) closed\\.$",
+                "pattern": "^The (door|gate|grate|trapdoor)(?:.*)(?:is|seem to be|seems to be) closed\\.$",
                 "type": "regex"
             },
             {
-                "pattern": "^The .* (doors|door|gate|trapdoor) (?:seem|seems) to be closed\\.$",
+                "pattern": "^The .* (doors|door|gate|grate|trapdoor) (?:seem|seems) to be closed\\.$",
                 "type": "regex"
             }
         ]
     },
     {
-        "name": "Lock Manager",
+        "name": "lock_manager",
         "isActive": "yes",
         "isFolder": "no",
         "multiline": "no",
@@ -210,7 +210,7 @@
         ]
     },
     {
-        "name": "Death Trigger",
+        "name": "death_trigger",
         "isActive": "yes",
         "isFolder": "no",
         "multiline": "no",
