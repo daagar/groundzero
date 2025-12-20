@@ -1,1 +1,1 @@
-GZ.combat.ff()
+GZ.combat.followup()

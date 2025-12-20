@@ -32,12 +32,16 @@ function GZ.combat.execute_strategy(skillList)
     cecho("<yellow>Combat: No usable skills found for your current level and class in this strategy.\n")
 end
 
---- Function to be called by the 'f' alias for opening combat.
-function GZ.combat.f()
+--- Function to be called by the 'ff' alias for opening combat.
+function GZ.combat.opening()
     GZ.combat.execute_strategy(GZ.combat.strategies.openers)
 end
 
---- Function to be called by the 'ff' alias for in-combat actions.
-function GZ.combat.ff()
+--- Function to be called by the 'f' alias for in-combat actions.
+function GZ.combat.followup()
+    if not GZ.combat.active then
+        cecho("<yellow>Combat: Not in combat.\n")
+        return
+    end
     GZ.combat.execute_strategy(GZ.combat.strategies.in_combat)
 end

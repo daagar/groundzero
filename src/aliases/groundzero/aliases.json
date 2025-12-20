@@ -3,13 +3,13 @@
         "name": "combat_opener",
         "isActive": "yes",
         "isFolder": "no",
-        "regex": "^f$"
+        "regex": "^ff$"
     },
     {
         "name": "combat_followup",
         "isActive": "yes",
         "isFolder": "no",
-        "regex": "^ff$"
+        "regex": "^f$"
     },
     {
         "name": "set_strategy",

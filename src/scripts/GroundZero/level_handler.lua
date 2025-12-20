@@ -16,6 +16,7 @@ function GZ.onLevelUpMessage()
     end
 
     GZ.checkAndQueueSkills(class, nextLevel)
+    send("wimp full") -- set wimpy to half hit points
 end
 
 function GZ.checkAndQueueSkills(class, level)

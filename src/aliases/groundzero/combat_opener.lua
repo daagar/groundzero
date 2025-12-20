@@ -1,1 +1,1 @@
-GZ.combat.f()
+GZ.combat.opening()
