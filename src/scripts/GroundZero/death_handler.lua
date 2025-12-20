@@ -13,16 +13,11 @@ function GZ.onDeath()
     send("get all from bag")
 
     -- Class-specific recovery
-    if msdp and msdp.CLASS then
-        local class = string.lower(msdp.CLASS)
-        local level = tonumber(msdp.LEVEL)
-        if class == "ranger" then
-            cecho("<green>Ranger detected! Applying buffs...\n")
-            if level >= 15 then
-                send("bark skin")
-                send("invig")
-            end
-        end
+    if GZ.canUse("bark skin") then
+        send("bark skin")
+    end
+    if GZ.canUse("invigorate") then
+        send("invig")
     end
 end
 

@@ -4,6 +4,10 @@
     "eventHandlerList": []
   },
   {
+    "name": "skills",
+    "eventHandlerList": []
+  },
+  {
     "name": "msdp_mapper",
     "eventHandlerList": []
   },
