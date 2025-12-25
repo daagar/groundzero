@@ -47,6 +47,9 @@ function GZ.on_prompt(event, matches)
         end
     end
 
+    GZ.player.wait = matches[8]
+    
+
     -- Close affects capture if active
     raiseEvent("GZ.affects_end")
 

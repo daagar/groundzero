@@ -49,7 +49,7 @@
         "fireLength": "0",
         "patterns": [
             {
-                "pattern": "^< \\d+H \\d+M \\d+V( AFK)?(?: (.*?) \\[(\\d+)%\\])? \\[Lvl (\\d+), EXP to next: (\\d+)\\](?: M\\[(\\d+)\\])? >",
+                "pattern": "^< \\d+H \\d+M \\d+V( AFK)?(?: (.*?) \\[(\\d+)%\\])? \\[Lvl (\\d+), EXP to next: (\\d+)\\](?: M\\[(\\d+)\\])?( (W\\[(\\d+)/(<)?(\\d+)\\]))? >",
                 "type": "regex"
             }
         ]

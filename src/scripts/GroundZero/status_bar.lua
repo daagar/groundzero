@@ -98,20 +98,24 @@ function StatusBar.get_extra_info(line_index)
     local padding = "   " -- Space between gauge and info
 
     if line_index == 1 then
+        if GZ.player.wait then
+            extras = string.format("<255,255,255>[Wait: %s]", GZ.player.wait) or ""
+        end
+    elseif line_index == 2 then
         -- Combat Info
         if GZ.combat and GZ.combat.active then
             local targetName = GZ.combat.target_name or "Unknown"
             local targetHealth = GZ.combat.target_health or 0
             extras = string.format("<255,100,100>[Target: %s]", targetName) or ""
         end
-    elseif line_index == 2 then
+    elseif line_index == 3 then
         -- Level Info
         if GZ.player and GZ.player.level then
             local level = GZ.player.level or 0
             local tnl = GZ.player.tnl or 0
             extras = string.format("<100,255,100>[Lvl: %d  TNL: %d]", level, tnl) or ""
         end
-    elseif line_index == 3 then
+    elseif line_index == 4 then
         -- Mobs & AFK
         if GZ.mobs_in_room then
             local mobsInRoom = GZ.mobs_in_room or 0
@@ -146,18 +150,18 @@ function StatusBar.update_all()
         -- Truncate name to 9 chars to align loosely with "HP:  123/123" (approx 14 chars)
         -- %-9.9s pads to 9, truncates at 9.
         -- <255,100,100> is a light red for the text
-        target_line = string.format("<255,100,100>%-9.9s %3d%% %s\n", name, hp_pct, bar)
+        target_line = string.format("<255,100,100>%-9.9s %3d%% %s", name, hp_pct, bar) .. StatusBar.get_extra_info(1)
     end
 
     -- 2. Player Stats (Rows 2-4)
     local hp = StatusBar.update_gauge(StatusBar.health, "HP:", msdp.HEALTH, msdp.HEALTH_MAX) ..
-        StatusBar.get_extra_info(1)
-    local mp = StatusBar.update_gauge(StatusBar.mana, "MP:", msdp.MANA, msdp.MANA_MAX) .. StatusBar.get_extra_info(2)
+        StatusBar.get_extra_info(2)
+    local mp = StatusBar.update_gauge(StatusBar.mana, "MP:", msdp.MANA, msdp.MANA_MAX) .. StatusBar.get_extra_info(3)
     local mv = StatusBar.update_gauge(StatusBar.movement, "MV:", msdp.MOVEMENT, msdp.MOVEMENT_MAX) ..
-        StatusBar.get_extra_info(3)
+        StatusBar.get_extra_info(4)
 
     -- Print nicely formatted lines using decho (for hex support)
-    StatusBar.console:decho(target_line)
+    StatusBar.console:decho(target_line .. "\n")
     StatusBar.console:decho(hp .. "\n")
     StatusBar.console:decho(mp .. "\n")
     StatusBar.console:decho(mv .. "\n")

@@ -29,7 +29,7 @@ GZ.classSkills.ranger = {
     ["grapple"] = 20,
     ["control weather"] = 25,
     ["parry"] = 25,
-    ["sword sweep"] = 30,
+    ["ssweep"] = 30,
 }
 
 --- Checks if a character can use a specific skill based on their class and level.
